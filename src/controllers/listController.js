@@ -42,6 +42,21 @@ const listController = {
       res.status(500).json({ message: "Erreur serveur lors de la récupération de la liste." });
     }
   },
+
+  async create(req, res) {
+
+    try {
+
+        const result = await List.create(req.body);
+
+        res.status(201).json(result);
+
+    } catch (error) {
+      console.error("Erreur lors de la création de la liste:", error);
+      res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!" });
+    }
+  },
+
 }
 
   export { listController };
