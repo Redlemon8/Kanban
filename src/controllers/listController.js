@@ -1,3 +1,4 @@
+import Joi from "joi";
 import { List } from "../models/association.js";
 
 const listController = {
@@ -45,6 +46,12 @@ const listController = {
 
   async create(req, res) {
 
+    const error = listController.validate(req);
+
+    if (error) {
+      res.send(error);
+    }
+
     try {
 
         const result = await List.create(req.body);
@@ -58,6 +65,12 @@ const listController = {
   },
 
   async update(req, res) {
+
+    const error = listController.validate(req);
+
+    if (error) {
+      res.send(error);
+    }
 
     try {
 
@@ -110,6 +123,35 @@ const listController = {
       res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!" });
     }
   },
+
+  validate(req) {
+
+    let schema = Joi.object({
+        title: Joi.string().min(3).max(100).messages({
+            "string.base": "Le titre doit être une chaîne de caractères",
+            "string.min": "Le titre doit contenir au moins 3 caractères",
+            "string.max": "Le titre doit contenir au plus 100 caractères",
+        }),
+        position: Joi.number().integer().greater(0).messages({
+            "number.base": "La position doit être un nombre",
+            "number.integer": "La position doit être un nombre entier",
+            "number.greater": "La position doit être supérieure à 0",
+        }),
+    });
+
+    if (req.method === "POST") {
+
+        schema = schema.fork(['title'], field => field.required().messages({
+            "any.required": "Le titre est requis",
+        }));
+    }
+
+    const error = schema.validate(req.body, { abortEarly: false }).error;
+
+    return error
+        ? {statusCode: 400, message: error.details.map(detail => detail.message)}
+        : null;
+  }
 
 }
 
