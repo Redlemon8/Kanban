@@ -57,6 +57,38 @@ const listController = {
     }
   },
 
+  async update(req, res) {
+
+    try {
+
+      const list = await List.findByPk(req.params.id, {
+        include: { association: "cards", include: "tags" }
+      });
+
+      if (!list) {
+          return res.status(404).send("404 not found !");
+      }
+
+      const { title, position } = req.body;
+
+      if (title) {
+        list.title = title;
+      }
+
+      if (position) {
+          list.position = position;
+      }
+
+      await list.save();
+
+      res.status(200).json(list);
+
+    } catch (error) {
+      console.error("Erreur lors de la création de la liste:", error);
+      res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!" });
+    }
+  },
+
 }
 
   export { listController };
