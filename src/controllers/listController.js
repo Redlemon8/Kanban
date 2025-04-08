@@ -66,7 +66,7 @@ const listController = {
       });
 
       if (!list) {
-          return res.status(404).send("404 not found !");
+        return res.status(404).send("404 not found !");
       }
 
       const { title, position } = req.body;
@@ -82,6 +82,28 @@ const listController = {
       await list.save();
 
       res.status(200).json(list);
+
+    } catch (error) {
+      console.error("Erreur lors de la création de la liste:", error);
+      res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!" });
+    }
+  },
+
+  async delete (req, res) {
+
+    try {
+
+      const list = await List.findByPk(req.params.id, {
+        include: { association: "cards", include: "tags" }
+      });
+
+      if (!list) {
+        return res.status(404).send("404 not found !");
+      }
+
+      await list.destroy();
+
+      res.sendStatus(204);
 
     } catch (error) {
       console.error("Erreur lors de la création de la liste:", error);
