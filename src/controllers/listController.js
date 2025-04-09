@@ -124,6 +124,7 @@ const listController = {
     }
   },
 
+  // VALIDATION SCHEMA TO CHECK POST AND PATCH INPUT 
   validate(req) {
 
     let schema = Joi.object({
