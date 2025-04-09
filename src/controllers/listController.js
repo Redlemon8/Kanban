@@ -3,7 +3,7 @@ import { List } from "../models/association.js";
 
 const listController = {
 
-  async index(req, res) {
+  async findAll(req, res) {
 
     try {
 
@@ -22,7 +22,7 @@ const listController = {
     }
   },
 
-  async show(req, res) {
+  async findOne(req, res) {
 
     const listId = req.params.id
 
