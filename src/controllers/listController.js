@@ -84,13 +84,14 @@ const listController = {
 
       const { title, position } = req.body;
 
-      if (title) {
-        list.title = title;
+      for (const key in req.body) {
+
+        if (list[key] !== undefined) {
+
+          list[key] = req.body[key];
+        }
       }
 
-      if (position) {
-          list.position = position;
-      }
 
       await list.save();
 

@@ -19,6 +19,8 @@ router.delete("/cards/:id", cardController.delete);
 router.get("/lists/:id/cards", cardController.cardsByList);
 
 router.get("/tags", tagController.findAll);
-router.get('/tags/:id', tagController.findOne);
+router.get("/tags/:id", tagController.findOne);
+router.post("/tags/", tagController.create);
+router.patch("/tags/:id", tagController.update);
 
 export { router };

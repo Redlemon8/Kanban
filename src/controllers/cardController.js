@@ -59,7 +59,7 @@ const cardController = {
 
     } catch (error) {
       console.error("Erreur lors de la création de la carte:", error);
-      return next({statusCode: 400, message: "Erreur lors de l'enregistrement en BDD !!!"}); 
+      res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!"}); 
     }
   },
 
