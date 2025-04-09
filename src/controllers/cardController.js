@@ -54,6 +54,50 @@ const cardController = {
       return next({statusCode: 400, message: "Erreur lors de l'enregistrement en BDD !!!"}); 
     }
   },
+
+  async update(req, res) {
+  
+    try {
+
+      const card = await Card.findByPk(req.params.id, {
+        include: ["list", "tags"]
+      });
+
+      if (!card) {
+        return res.status(404).send("404 not found !");
+      }
+
+      // LOOP TO KEEP INPUT VALUE
+      for (const key in req.body) {
+
+        if (card[key] !== undefined) {
+
+          card[key] = req.body[key];
+        }
+      }
+
+      await card.save();
+
+      res.status(200).json(card);
+
+    } catch (error) {
+      console.error("Erreur lors de la création de la liste:", error);
+      res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!" });
+    }
+  },
+
+  async delete(req, res, next) {
+
+    const card = await Card.findByPk(req.params.id);
+
+    if (!card) {
+      return res.status(404).send("404 not found !");
+    }
+
+    await card.destroy();
+
+    res.sendStatus(204);
+  },
 }
 
 export { cardController };

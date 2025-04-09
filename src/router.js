@@ -13,5 +13,7 @@ router.delete("/lists/:id", listController.delete);
 router.get("/cards", cardController.findAll);
 router.get("/cards/:id", cardController.findOne);
 router.post("/cards/", cardController.create);
+router.patch("/cards/:id", cardController.update);
+router.delete("/cards/:id", cardController.delete);
 
 export { router };
