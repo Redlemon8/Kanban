@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { listController } from './controllers/listController.js';
 import { cardController } from './controllers/cardController.js';
+import { tagController } from './controllers/tagController.js';
 
 const router = Router();
 
@@ -16,5 +17,8 @@ router.post("/cards/", cardController.create);
 router.patch("/cards/:id", cardController.update);
 router.delete("/cards/:id", cardController.delete);
 router.get("/lists/:id/cards", cardController.cardsByList);
+
+router.get("/tags", tagController.findAll);
+router.get('/tags/:id', tagController.findOne);
 
 export { router };
