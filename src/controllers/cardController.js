@@ -1,4 +1,5 @@
 import { Card } from "../models/Card.js";
+import { List } from "../models/List.js";
 
 const cardController = {
 
@@ -98,6 +99,20 @@ const cardController = {
 
     res.sendStatus(204);
   },
+
+  async cardsByList(req, res, next) {
+  
+    const list = await List.findByPk(req.params.id, {
+      include: { association: "cards", include: ["list", "tags"] },
+    });
+
+    if (!list) {
+      return res.status(404).send("404 not found !");
+    }
+
+    res.status(200).json(list.cards);
+  },
+
 }
 
 export { cardController };
