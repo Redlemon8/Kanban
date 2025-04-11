@@ -1,6 +1,5 @@
 import Joi from "joi";
-import { Card } from "../models/Card.js";
-import { List } from "../models/List.js";
+import { Card, List } from "../models/association.js";
 
 const cardController = {
 

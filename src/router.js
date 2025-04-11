@@ -22,5 +22,9 @@ router.get("/tags", tagController.findAll);
 router.get("/tags/:id", tagController.findOne);
 router.post("/tags/", tagController.create);
 router.patch("/tags/:id", tagController.update);
+router.delete("/tags/:id", tagController.delete);
+router.put("/cards/:cards_id/tags/:tags_id", tagController.linkTagToCard);
+router.delete("/cards/:cards_id/tags/:tags_id", tagController.deleteTagToCard);
+
 
 export { router };

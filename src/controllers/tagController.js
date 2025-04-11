@@ -1,4 +1,4 @@
-import { Tag } from "../models/Tag.js"
+import { Card, Tag } from "../models/association.js";
 
 const tagController = {
 
@@ -61,8 +61,6 @@ const tagController = {
         return res.status(404).send("404 not found !");
       }
       
-      const { name, color } = req.body;
-
       for (const key in req.body) {
 
         if (tag[key] !== undefined) {
@@ -70,7 +68,6 @@ const tagController = {
           tag[key] = req.body[key];
         }
       }
-
 
       await tag.save();
 
@@ -80,7 +77,68 @@ const tagController = {
       console.error("Erreur lors de la création du tag:", error);
       res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!"});
     }
-  }
+  },
+
+  async delete(req, res) {
+
+    try {
+      
+      const tag = await Tag.findByPk(req.params.id);
+
+      if (!tag) {
+        return res.status(404).send("404 not found !");
+      }
+  
+      await tag.destroy();
+      res.status(204);
+
+    } catch (error) {
+      console.error("Erreur lors de la suppression du tag:", error);
+      res.status(400).json({ message: "Erreur lors de la suppression en BDD !!!"});
+    }
+  },
+
+  async linkTagToCard(req, res) {
+
+    try {
+      
+      const card = await Card.findByPk(req.params.card_id);
+      const tag = await Tag.findByPk(req.params.tag_id);
+  
+      if (!card || !tag) {
+        return res.status(404).send("404 not found !");
+      }
+  
+      await card.addTag(tag);
+  
+      res.status(200).json(await tag.reload({ include: { association: "cards", include: 'list' } }));
+
+    } catch (error) {
+      console.error("Erreur lors de la mise a jour du tag:", error);
+      res.status(400).json({ message: "Erreur lors de la mise a jour en BDD !!!"});
+    }
+
+  },
+
+  async deleteTagToCard(req, res) {
+
+    try {
+      
+      const card = await Card.findByPk(req.params.card_id);
+      const tag = await Tag.findByPk(req.params.tag_id);
+
+      if (!tag || !card) {
+        return res.status(404).send("404 not found !");
+      }
+  
+      await card.destroy(tag);
+      res.status(200).json(await tag.reload({ include: { association: "cards", include: 'list' } }));
+
+    } catch (error) {
+      console.error("Erreur lors de la suppression du tag:", error);
+      res.status(400).json({ message: "Erreur lors de la suppression en BDD !!!"});
+    }
+  },
 }
 
 export { tagController };
