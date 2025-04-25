@@ -1,160 +1,75 @@
-import Joi from "joi";
 import { List } from "../models/association.js";
+import { notFound } from "../utils/error.js";
 
 const listController = {
 
   async findAll(req, res) {
 
-    try {
+    const lists = await List.findAll({
+      include: { association: "cards", include: "tags" },
+      order: [
+        ["position", "ASC"]
+      ]
+    });
 
-      const lists = await List.findAll({
-        include: { association: "cards", include: "tags" },
-        order: [
-          ["position", "ASC"]
-        ]
-      });
-
-      res.status(200).json(lists);
-
-    } catch (error) {
-      console.error("Erreur lors de la récupération des listes:", error);
-      res.status(500).json({ message: "Erreur serveur lors de la récupération des listes." });
-    }
+    res.status(200).json(lists);
   },
 
   async findOne(req, res) {
 
     const listId = req.params.id
 
-    try {
-      
-      const result = await List.findByPk(listId, {
-          include: { association: "cards", include: "tags" }
-      });
+    const result = await List.findByPk(listId, {
+        include: { association: "cards", include: "tags" }
+    });
 
-      if (!result) {
-        res.status(404).send("lists not found");
-      }
-
-      res.status(200).json(result);
-
-    } catch (error) {
-      console.error("Erreur lors de la récupération de la liste:", error);
-      res.status(500).json({ message: "Erreur serveur lors de la récupération de la liste." });
+    if (!result) {
+      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
     }
+
+    res.status(200).json(result);
   },
 
   async create(req, res) {
 
-    const error = listController.validate(req);
-
-    if (error) {
-      res.send(error);
-    }
-
-    try {
-
-        const result = await List.create(req.body);
-
-        res.status(201).json(result);
-
-    } catch (error) {
-      console.error("Erreur lors de la création de la liste:", error);
-      res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!" });
-    }
+    const result = await List.create(req.body);
+    res.status(201).json(result);
   },
 
   async update(req, res) {
 
-    const error = listController.validate(req);
-
-    if (error) {
-      res.send(error);
-    }
-
-    try {
-
-      const list = await List.findByPk(req.params.id, {
-        include: { association: "cards", include: "tags" }
-      });
+    const list = await List.findByPk(req.params.id, {
+      include: { association: "cards", include: "tags" }
+    });
 
       if (!list) {
-        return res.status(404).send("404 not found !");
-      }
-
-      const { title, position } = req.body;
-
-      for (const key in req.body) {
-
-        if (list[key] !== undefined) {
-
-          list[key] = req.body[key];
-        }
-      }
-
-
-      await list.save();
-
-      res.status(200).json(list);
-
-    } catch (error) {
-      console.error("Erreur lors de la création de la liste:", error);
-      res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!" });
+        notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
     }
+
+    const { title, position } = req.body;
+
+    for (const key in req.body) {
+      if (list[key] !== undefined) {
+        list[key] = req.body[key];
+      }
+    }
+    await list.save();
+    res.status(200).json(list);
   },
 
   async delete (req, res) {
 
-    try {
-
-      const list = await List.findByPk(req.params.id, {
-        include: { association: "cards", include: "tags" }
-      });
-
-      if (!list) {
-        return res.status(404).send("404 not found !");
-      }
-
-      await list.destroy();
-
-      res.sendStatus(204);
-
-    } catch (error) {
-      console.error("Erreur lors de la création de la liste:", error);
-      res.status(400).json({ message: "Erreur lors de l'enregistrement en BDD !!!" });
-    }
-  },
-
-  // VALIDATION SCHEMA TO CHECK POST AND PATCH INPUT 
-  validate(req) {
-
-    let schema = Joi.object({
-        title: Joi.string().min(3).max(100).messages({
-            "string.base": "Le titre doit être une chaîne de caractères",
-            "string.min": "Le titre doit contenir au moins 3 caractères",
-            "string.max": "Le titre doit contenir au plus 100 caractères",
-        }),
-        position: Joi.number().integer().greater(0).messages({
-            "number.base": "La position doit être un nombre",
-            "number.integer": "La position doit être un nombre entier",
-            "number.greater": "La position doit être supérieure à 0",
-        }),
+    const list = await List.findByPk(req.params.id, {
+      include: { association: "cards", include: "tags" }
     });
 
-    if (req.method === "POST") {
-
-        schema = schema.fork(['title'], field => field.required().messages({
-            "any.required": "Le titre est requis",
-        }));
+    if (!list) {
+      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
     }
 
-    const error = schema.validate(req.body, { abortEarly: false }).error;
-
-    return error
-        ? {statusCode: 400, message: error.details.map(detail => detail.message)}
-        : null;
+    await list.destroy();
+    res.sendStatus(204);
   }
-
 }
 
   export { listController };
