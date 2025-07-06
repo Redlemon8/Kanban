@@ -1,91 +1,50 @@
-import { Card, Tag } from "../models/association.js";
-import { notFound } from "../utils/error.js";
+import tagService from "../services/tagService.js";
 
 const tagController = {
 
   async findAll(req, res) {
 
-      const tags = await Tag.findAll({
-        include: { association: "cards", include: "list" },
-        order: [["name", "ASC"]]
-      })
+      const tags = await tagService.getAllTags();
       res.status(200).json(tags);
   },
 
   async findOne(req, res) {
 
     const tagId = req.params.id;
-
-      const tag = await Tag.findByPk(tagId, {
-        include: { association: "cards", include: "list" },
-        order: [["name", "ASC"]]
-      })
-
-      if (!tag) {
-        notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-      res.status(200).json(tag);
+    const result = await tagService.getTagById(tagId);
+    res.status(200).json(result);
   },
 
   async create(req, res) {
 
-      const result = await Tag.create(req.body);
-      res.status(201).json(result);
+    const result = await tagService.createTag(req.body);
+    res.status(201).json(result);
   },
 
   async update(req, res) {
 
-    const tag = await Tag.findByPk(req.params.id);
-
-    if (!tag) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-    
-    for (const key in req.body) {
-      if (tag[key] !== undefined) {
-        tag[key] = req.body[key];
-      }
-    }
-    await tag.save();
-    res.status(201).json(tag);
+    const tagId = req.params.id;
+    const result = await tagService.updateTag(tagId, req.body);
+    res.status(200).json(result);
   },
 
   async delete(req, res) {
 
-    const tag = await Tag.findByPk(req.params.id);
-
-    if (!category) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-
-    await tag.destroy();
-    res.status(204);
+    const tagId = req.params.id;
+    await tagService.deleteTag(tagId);
+    res.sendStatus(204);
   },
 
   async linkTagToCard(req, res) {
 
-      const card = await Card.findByPk(req.params.card_id);
-      const tag = await Tag.findByPk(req.params.tag_id);
-  
-      if (!card || !tag) {
-        notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-      }
-
-      await card.addTag(tag);
-      res.status(200).json(await tag.reload({ include: { association: "cards", include: 'list' } }));
+    const result = await tagService.linkTagToCard(req.params.tag_id, req.params.card_id);
+    res.status(200).json(result);
   },
 
   async deleteTagToCard(req, res) {
 
-    const card = await Card.findByPk(req.params.card_id);
-    const tag = await Tag.findByPk(req.params.tag_id);
-
-    if (!card || !tag) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-
-    await card.destroy(tag);
-    res.status(200).json(await tag.reload({ include: { association: "cards", include: 'list' } }));
+    const result = await tagService.unlinkTagFromCard(req.params.tag_id, req.params.card_id);
+    res.status(200).json(result);
   },
 }
 

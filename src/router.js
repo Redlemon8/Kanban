@@ -28,8 +28,8 @@ router.get("/tags/:id", cw(tagController.findOne));
 router.post("/tags/", validate(createTagSchema), cw(tagController.create));
 router.patch("/tags/:id", validate(updateTagSchema), cw(tagController.update));
 router.delete("/tags/:id", cw(tagController.delete));
-router.put("/cards/:cards_id/tags/:tags_id", cw(tagController.linkTagToCard));
-router.delete("/cards/:cards_id/tags/:tags_id", cw(tagController.deleteTagToCard));
+router.put("/cards/:card_id/tags/:tag_id", cw(tagController.linkTagToCard));
+router.delete("/cards/:card_id/tags/:tag_id", cw(tagController.deleteTagToCard));
 
 
 export { router };

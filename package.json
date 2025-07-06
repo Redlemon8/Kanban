@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:integration": "npm test -- --testPathPatterns=src/__tests__/integration",
+    "test:unit": "npm test -- --testPathPatterns=src/__tests__/unit",
     "dev": "node --watch index.js",
     "db:create": "node src/migrations/createTables.js",
     "db:seed": "node src/migrations/seedTables.js",
@@ -30,6 +32,12 @@
     "express-xss-sanitizer": "^2.0.0",
     "joi": "^17.13.3",
     "pg": "^8.14.1",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "jest": "^30.0.4",
+    "sqlite3": "^5.1.7",
+    "supertest": "^7.1.1"
   }
 }

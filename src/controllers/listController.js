@@ -1,17 +1,10 @@
-import { List } from "../models/association.js";
-import { notFound } from "../utils/error.js";
+import listService from "../services/listService.js";
 
 const listController = {
 
   async findAll(req, res) {
 
-    const lists = await List.findAll({
-      include: { association: "cards", include: "tags" },
-      order: [
-        ["position", "ASC"]
-      ]
-    });
-
+    const lists = await listService.getAllLists();
     res.status(200).json(lists);
   },
 
@@ -19,55 +12,34 @@ const listController = {
 
     const listId = req.params.id
 
-    const result = await List.findByPk(listId, {
-        include: { association: "cards", include: "tags" }
-    });
-
-    if (!result) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-
+    const result = await listService.getListById(listId);
     res.status(200).json(result);
   },
 
   async create(req, res) {
 
-    const result = await List.create(req.body);
+    const result = await listService.createList(req.body);
     res.status(201).json(result);
   },
 
   async update(req, res) {
 
-    const list = await List.findByPk(req.params.id, {
-      include: { association: "cards", include: "tags" }
-    });
+    const listId = req.params.id;
+    const result = await listService.updateList(listId, req.body);
+    res.status(200).json(result);
+  },
 
-      if (!list) {
-        notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
+  async delete(req, res) {
 
-    const { title, position } = req.body;
-
-    for (const key in req.body) {
-      if (list[key] !== undefined) {
-        list[key] = req.body[key];
-      }
-    }
-    await list.save();
-    res.status(200).json(list);
+    const listId = req.params.id;
+    await listService.deleteList(listId);
+    res.sendStatus(204);
   },
 
   async delete (req, res) {
 
-    const list = await List.findByPk(req.params.id, {
-      include: { association: "cards", include: "tags" }
-    });
-
-    if (!list) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-
-    await list.destroy();
+    const listId = req.params.id;
+    await listService.deleteList(listId);
     res.sendStatus(204);
   }
 }

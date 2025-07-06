@@ -1,81 +1,46 @@
-import { Card, List } from "../models/association.js";
-import { notFound } from "../utils/error.js";
+import cardService from "../services/cardService.js";
 
 const cardController = {
 
   async findAll(req, res) {
 
-    const cards = await Card.findAll({
-      include: ["list", "tags"],
-      order: [
-        ["position", "ASC"],
-        ["created_at", "DESC"],
-      ],
-    });
-
+    const cards = await cardService.getAllCards();
     res.status(200).json(cards);
   },
 
   async findOne(req, res) {
 
     const cardId = req.params.id;
-      const result = await Card.findByPk(cardId, {
-        include: ["list", "tags"]});
-
-    if (!result) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
+    const result = await cardService.getCardById(cardId);
     res.status(200).json(result);
   },
 
   async create(req, res) {
 
-    const result = await Card.create(req.body);
+    const result = await cardService.createCard(req.body);
     res.status(201).json(result);
   },
   
   async update(req, res) {
 
-    const card = await Card.findByPk(req.params.id, {
-      include: ["list", "tags"]
-    });
+    const cardId = req.params.id;
+    const result = await cardService.updateCard(cardId, req.body);
+    res.status(200).json(result);
 
-    if (!card) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-
-    // LOOP TO KEEP INPUT VALUE
-    for (const key in req.body) {
-      if (card[key] !== undefined) {
-        card[key] = req.body[key];
-      }
-    }
-
-    await card.save();
-    res.status(200).json(card);
   },
 
   async delete(req, res, next) {
 
-    const card = await Card.findByPk(req.params.id);
-
-    if (!card) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-    await card.destroy();
+    const cardId = req.params.id;
+    await cardService.deleteCard(cardId);
     res.sendStatus(204);
   },
 
   async cardsByList(req, res, next) {
   
-    const list = await List.findByPk(req.params.id, {
-      include: { association: "cards", include: ["list", "tags"] },
-    });
-
-    if (!list) {
-      notFound(`Catégorie avec l'ID ${req.params.id} non trouvée`);
-    }
-    res.status(200).json(list.cards);
+    const listId = req.params.id;
+    const result = await cardService.getCardsByListId(listId);
+    res.status(200).json(result);
   },
 }
 
