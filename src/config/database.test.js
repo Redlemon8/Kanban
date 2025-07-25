@@ -1,3 +1,4 @@
+//src/__tests__/config/database.test.js
 import { Sequelize } from 'sequelize';
 
 // Configuration pour la base de données de test (SQLite en mémoire)

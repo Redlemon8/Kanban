@@ -1,4 +1,4 @@
-import { testSequelize } from '../config/database.test.js';
+import { testSequelize } from './database.test.js';
 import { Model, DataTypes } from 'sequelize';
 
 // Modèle List pour les tests

@@ -1,3 +1,4 @@
+//src/controllers/cardController.js
 import cardService from "../services/cardService.js";
 
 const cardController = {
@@ -40,6 +41,14 @@ const cardController = {
   
     const listId = req.params.id;
     const result = await cardService.getCardsByListId(listId);
+    res.status(200).json(result);
+  },
+
+  async updatePosition(req, res, next) {  
+    const cardId = req.params.id;
+    const newPosition = req.body.position;
+    const newListId = req.body.list_id;
+    const result = await cardService.moveCard(cardId, newPosition, newListId);
     res.status(200).json(result);
   },
 }

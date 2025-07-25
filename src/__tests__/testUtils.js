@@ -1,5 +1,5 @@
 import { testSequelize } from '../config/database.test.js';
-import { Card, List, Tag } from '../models/association.test.js';
+import { Card, List, Tag } from '../config/association.test.js';
 
 // Initialiser les modèles avec la base de test
 export const initializeTestDatabase = async () => {

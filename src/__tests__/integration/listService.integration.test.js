@@ -1,10 +1,9 @@
-import { jest } from '@jest/globals';
 import { 
   initializeTestDatabase, 
   clearTestDatabase, 
   closeTestDatabase, 
   createTestData 
-} from '../../utils/testUtils.js';
+} from '../testUtils.js';
 
 // Import du service après l'initialisation de la base de test
 let listService;
@@ -15,7 +14,7 @@ describe("List Service Integration Tests", () => {
     await initializeTestDatabase();
     
     // Importer le service de test après l'initialisation
-    const { Card, List, Tag } = await import('../../models/association.test.js');
+    const { Card, List, Tag } = await import('../../config/association.test.js');
     
     // Créer un service de test qui utilise les modèles SQLite
     listService = {
@@ -234,7 +233,7 @@ describe("List Service Integration Tests", () => {
 
     it("should throw error when no cards in list", async () => {
       // Créer seulement une liste sans cartes
-      const { List } = await import('../../models/association.test.js');
+      const { List } = await import('../../config/association.test.js');
       const list = await List.create({
         title: 'Liste Vide',
         position: 1

@@ -1,3 +1,4 @@
+//src/utils/error.js
 // * Création d'une classe de base pour la géstion des erreur
 class AppError extends Error {
   constructor(message, statusCode) {

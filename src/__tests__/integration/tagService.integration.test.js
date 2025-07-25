@@ -1,10 +1,9 @@
-import { jest } from '@jest/globals';
 import { 
   initializeTestDatabase, 
   clearTestDatabase, 
   closeTestDatabase, 
   createTestData 
-} from '../../utils/testUtils.js';
+} from '../testUtils.js';
 
 // Import du service après l'initialisation de la base de test
 let tagService;
@@ -15,7 +14,7 @@ describe("Tag Service Integration Tests", () => {
     await initializeTestDatabase();
     
     // Importer le service de test après l'initialisation
-    const { Card, List, Tag } = await import('../../models/association.test.js');
+    const { Card, List, Tag } = await import('../../config/association.test.js');
     
     // Créer un service de test qui utilise les modèles SQLite
     tagService = {
@@ -221,7 +220,7 @@ describe("Tag Service Integration Tests", () => {
 
     it("should throw error when tag not found", async () => {
       // Créer seulement une carte
-      const { Card, List } = await import('../../models/association.test.js');
+      const { Card, List } = await import('../../config/association.test.js');
       const list = await List.create({
         title: 'Liste Test',
         position: 1
@@ -239,7 +238,7 @@ describe("Tag Service Integration Tests", () => {
 
     it("should throw error when card not found", async () => {
       // Créer seulement un tag
-      const { Tag } = await import('../../models/association.test.js');
+      const { Tag } = await import('../../config/association.test.js');
       const tag = await Tag.create({
         name: 'Tag Test',
         color: '#ff0000'
@@ -267,7 +266,7 @@ describe("Tag Service Integration Tests", () => {
 
     it("should throw error when tag not found", async () => {
       // Créer seulement une carte
-      const { Card, List } = await import('../../models/association.test.js');
+      const { Card, List } = await import('../../config/association.test.js');
       const list = await List.create({
         title: 'Liste Test',
         position: 1
@@ -285,7 +284,7 @@ describe("Tag Service Integration Tests", () => {
 
     it("should throw error when card not found", async () => {
       // Créer seulement un tag
-      const { Tag } = await import('../../models/association.test.js');
+      const { Tag } = await import('../../config/association.test.js');
       const tag = await Tag.create({
         name: 'Tag Test',
         color: '#ff0000'

@@ -1,10 +1,10 @@
-import { jest } from '@jest/globals';
+//src/__tests__/integration/cardService.integration.test.js
 import { 
   initializeTestDatabase, 
   clearTestDatabase, 
   closeTestDatabase, 
   createTestData 
-} from '../../utils/testUtils.js';
+} from '../testUtils.js';
 
 // Import du service après l'initialisation de la base de test
 let cardService;
@@ -15,7 +15,7 @@ describe("Card Service Integration Tests", () => {
     await initializeTestDatabase();
     
     // Importer le service de test après l'initialisation
-    const { Card, List, Tag } = await import('../../models/association.test.js');
+    const { Card, List, Tag } = await import('../../config/association.test.js');
     
     // Créer un service de test qui utilise les modèles SQLite
     cardService = {
@@ -231,7 +231,7 @@ describe("Card Service Integration Tests", () => {
   describe("createCard", () => {
     it("should create a new card", async () => {
       // Créer une liste de test
-      const { List } = await import('../../models/association.test.js');
+      const { List } = await import('../../config/association.test.js');
       const list = await List.create({
         title: 'Liste Test',
         position: 1
@@ -324,7 +324,7 @@ describe("Card Service Integration Tests", () => {
 
     it("should throw error when no cards in list", async () => {
       // Créer seulement une liste sans cartes
-      const { List } = await import('../../models/association.test.js');
+      const { List } = await import('../../config/association.test.js');
       const list = await List.create({
         title: 'Liste Vide',
         position: 1
@@ -338,7 +338,7 @@ describe("Card Service Integration Tests", () => {
   describe("moveCard", () => {
     it("should move a card to a new position in the same list", async () => {
       // Créer des données de test avec plusieurs cartes dans la même liste
-      const { Card, List } = await import('../../models/association.test.js');
+      const { Card, List } = await import('../../config/association.test.js');
       
       const list = await List.create({
         title: 'Liste Test',
@@ -385,7 +385,7 @@ describe("Card Service Integration Tests", () => {
 
     it("should move a card to a different list", async () => {
       // Créer deux listes avec des cartes
-      const { Card, List } = await import('../../models/association.test.js');
+      const { Card, List } = await import('../../config/association.test.js');
       
       const list1 = await List.create({
         title: 'Liste 1',
@@ -438,7 +438,7 @@ describe("Card Service Integration Tests", () => {
 
     it("should throw error when card not found", async () => {
       // Créer une liste de test
-      const { List } = await import('../../models/association.test.js');
+      const { List } = await import('../../config/association.test.js');
       const list = await List.create({
         title: 'Liste Test',
         position: 1
@@ -450,7 +450,7 @@ describe("Card Service Integration Tests", () => {
 
     it("should throw error when list not found", async () => {
       // Créer une carte de test
-      const { Card, List } = await import('../../models/association.test.js');
+      const { Card, List } = await import('../../config/association.test.js');
       const list = await List.create({
         title: 'Liste Test',
         position: 1
@@ -469,7 +469,7 @@ describe("Card Service Integration Tests", () => {
 
     it("should maintain data integrity with transactions", async () => {
       // Créer des données de test
-      const { Card, List } = await import('../../models/association.test.js');
+      const { Card, List } = await import('../../config/association.test.js');
       
       const list1 = await List.create({
         title: 'Liste 1',

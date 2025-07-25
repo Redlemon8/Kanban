@@ -1,3 +1,4 @@
+//src/middlewares/logger.js
 import logger from '../utils/logger.js';
 
 // Middleware pour logger les requêtes HTTP
