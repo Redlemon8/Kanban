@@ -1,10 +1,14 @@
-import { Card, List, Tag } from "../models/association.js";
+import { Card, List, Tag, Project, User } from "../models/association.js";
+
+const user = await User.create({ name: "John Doe", email: "john.doe@example.com", password: "password" });
+const project = await Project.create({ name: "Wipflow Project", user_id: user.id });
+
 
 console.log("🚧 add testing list...");
-const startingList = await List.create({ title: "Backlog", position: 1 });
+const startingList = await List.create({ title: "Backlog", position: 1, project_id: project.id });
 
 console.log("🚧 Add testing card...");
-const projectName = await Card.create({ content: "Wipflow Project", position: 1, list_id: startingList.id });
+const projectName = await Card.create({ content: "Wipflow Project", position: 1, list_id: startingList.id, project_id: project.id });
 
 console.log("🚧 Add testing tag...");
 const urgentTag = await Tag.create({ name: "Urgent", color: "#FF0000"});

@@ -8,6 +8,9 @@ Card.init(
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
+      validate: {
+        len: [3, 1000],
+      },
     },
     position: {
       type: DataTypes.INTEGER,
@@ -17,6 +20,9 @@ Card.init(
     color: {
       type: DataTypes.TEXT,
       defaultValue: '#ffffff',
+      validate: {
+        isHexColor: true,
+      },
     },
     list_id: {
       type: DataTypes.INTEGER,

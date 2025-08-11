@@ -8,12 +8,16 @@ List.init(
     title: {
       type: DataTypes.TEXT,
       validate: {
-        len: [3, 100]
-      }
+        len: [3, 100],
+      },
     },
     position: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
+    },
+    project_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   {

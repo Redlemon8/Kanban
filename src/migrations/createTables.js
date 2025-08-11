@@ -2,7 +2,10 @@ import { sequelize } from "../models/association.js";
 
 try {
 
-    await sequelize.drop();
+    await sequelize.drop({
+        force: true,
+        alter: true,
+    });
 
     await sequelize.sync();
 
