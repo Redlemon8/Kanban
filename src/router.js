@@ -33,11 +33,12 @@ router.post("/projects/", authenticateToken, validate(createProjectSchema), cw(p
 router.patch("/projects/:id", authenticateToken, validate(updateProjectSchema), cw(projectController.update));
 router.delete("/projects/:id", authenticateToken, cw(projectController.delete));
 
-router.get("/lists", authenticateToken, cw(listController.findAll));
-router.get("/lists/:id", authenticateToken, cw(listController.findOne));
-router.post("/lists/", authenticateToken, validate(createListSchema), cw(listController.create));
-router.patch("/lists/:id", authenticateToken, validate(updateListSchema), cw(listController.update));
-router.delete("/lists/:id", authenticateToken, cw(listController.delete));
+
+router.get("/projects/:id/lists", authenticateToken, cw(listController.findAll));
+router.get("/projects/:projectId/lists/:id", authenticateToken, cw(listController.findOne));
+router.post("/projects/:id/lists", authenticateToken, validate(createListSchema), cw(listController.create));
+router.patch("/projects/:projectId/lists/:id", authenticateToken, validate(updateListSchema), cw(listController.update));
+router.delete("/projects/:projectId/lists/:id", authenticateToken, cw(listController.delete));
 
 router.get("/cards", authenticateToken, cw(cardController.findAll));
 router.get("/cards/:id", authenticateToken, cw(cardController.findOne));

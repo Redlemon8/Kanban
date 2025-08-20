@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from './connection.js';
-import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
 export class RefreshToken extends Model {}

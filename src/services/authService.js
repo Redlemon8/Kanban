@@ -1,5 +1,4 @@
 import { User, RefreshToken } from "../models/association.js";
-import { notFound } from "../utils/error.js";
 import { Op } from 'sequelize';
 
 const authService = {

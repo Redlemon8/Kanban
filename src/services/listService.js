@@ -1,5 +1,5 @@
 //src/services/listService.js
-import { List, Card } from '../models/association.js';
+import { List, Card, Project } from '../models/association.js';
 import { notFound } from '../utils/error.js';
 
 const listService = {
@@ -15,8 +15,38 @@ const listService = {
     return lists;
   },
 
-  async getListById(listId) {
-    const list = await List.findByPk(listId, {
+  async getAllListsByProject(projectId) {
+    // Vérifier que le projet existe
+    const project = await Project.findByPk(projectId);
+    if (!project) {
+      notFound(`Projet avec l'ID ${projectId} non trouvé`);
+    }
+
+    const lists = await List.findAll({
+      where: { project_id: projectId },
+      include: [
+        {
+          association: "cards",
+          include: "tags"
+        }
+      ],
+    });
+    return lists;
+  },
+
+  async getListById(listId, projectId = null) {
+    const whereClause = { id: listId };
+    if (projectId) {
+      // Vérifier que le projet existe
+      const project = await Project.findByPk(projectId);
+      if (!project) {
+        notFound(`Projet avec l'ID ${projectId} non trouvé`);
+      }
+      whereClause.project_id = projectId;
+    }
+
+    const list = await List.findOne({
+      where: whereClause,
       include: [
         {
           association: "cards",
@@ -25,29 +55,61 @@ const listService = {
       ],
     });
     if (!list) {
-      notFound(`Liste avec l'ID ${listId} non trouvée`);
+      notFound(`Liste avec l'ID ${listId} non trouvée${projectId ? ` dans le projet ${projectId}` : ''}`);
     }
     return list;
   },
 
-  async createList(listData) {
-    const newList = await List.create(listData);
+  async createList(projectId, listData) {
+
+    const project = await Project.findByPk(projectId);
+
+    if (!project) {
+      notFound(`Projet avec l'ID ${projectId} non trouvé`);
+    }
+
+    const listDataWithProject = {
+      ...listData,
+      project_id: projectId
+    };
+
+    const newList = await List.create(listDataWithProject);
     return newList;
   },
 
-  async updateList(listId, listData) {
-    const list = await List.findByPk(listId);
+  async updateList(listId, listData, projectId = null) {
+    const whereClause = { id: listId };
+    if (projectId) {
+      // Vérifier que le projet existe
+      const project = await Project.findByPk(projectId);
+      if (!project) {
+        notFound(`Projet avec l'ID ${projectId} non trouvé`);
+      }
+      whereClause.project_id = projectId;
+    }
+
+    const list = await List.findOne({ where: whereClause });
     if (!list) {
-      notFound(`Liste avec l'ID ${listId} non trouvée`);
+      notFound(`Liste avec l'ID ${listId} non trouvée${projectId ? ` dans le projet ${projectId}` : ''}`);
     }
     await list.update(listData);
-    return await this.getListById(listId);
+    return await this.getListById(listId, projectId);
   },
 
-  async deleteList(listId) {
-    const list = await List.findByPk(listId);
+  async deleteList(listId, projectId = null) {
+    const whereClause = { id: listId };
+    if (projectId) {
+      // Vérifier que le projet existe
+      const project = await Project.findByPk(projectId);
+      if (!project) {
+        notFound(`Projet avec l'ID ${projectId} non trouvé`);
+      }
+      whereClause.project_id = projectId;
+    }
+
+    const list = await List.findOne({ where: whereClause });
     if (!list) {
-      notFound(`Liste avec l'ID ${listId} non trouvée`);
+      notFound(`Liste avec l'ID ${listId} non trouvée${projectId ? ` dans le projet ${projectId}` : ''}`);
     }
     await list.destroy();
   },
